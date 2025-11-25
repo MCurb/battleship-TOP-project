@@ -24,7 +24,7 @@ describe('isSunk method', () => {
   });
 
   test('being hitted', () => {
-    for (let i = 0; i <= ship.length; i++) {
+    for (let i = 0; i <= ship.length - 1; i++) {
       ship.hit();
     }
     expect(ship.isSunk()).toBe(true);
