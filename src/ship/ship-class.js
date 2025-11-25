@@ -4,4 +4,8 @@ export class Ship {
     this.hitCount = 0;
     this.isSunk = false;
   }
+
+  hit() {
+    this.hitCount++;
+  }
 }
