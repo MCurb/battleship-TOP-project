@@ -23,7 +23,7 @@ describe('hit method', () => {
     ship.hit();
 
     expect(ship.isShipSunk).toBe(true);
-  })
+  });
 });
 
 describe('isSunk method', () => {
