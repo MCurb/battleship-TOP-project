@@ -113,3 +113,7 @@ body {
 .cell.attacked-cell {
     background-color: blue;
 }
+
+.cell.ship {
+    background-color: black;
+}
