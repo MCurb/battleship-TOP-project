@@ -1,3 +1,5 @@
+import { experiments } from 'webpack';
+import { Ship } from '../ship/ship-class';
 import { Gameboard } from './gameboard-class';
 
 let gameBoard;
@@ -33,4 +35,30 @@ describe('ship placement', () => {
   });
 
   //Test if placeShip doesn't add a ship over another ship
+});
+
+describe('receive attacks', () => {
+  beforeEach(() => {
+    gameBoard.createBoard(10);
+  });
+  test('hit ship', () => {
+    const ship = new Ship(1);
+    gameBoard.board[5][7] = ship;
+    gameBoard.receiveAttack([5, 7]);
+    expect(ship.hitCount).toBe(1);
+  });
+  test('multiple hits till sunk', () => {
+    const ship = new Ship(2);
+    gameBoard.board[5][7] = ship;
+    gameBoard.board[6][7] = ship;
+    gameBoard.receiveAttack([5, 7]);
+    gameBoard.receiveAttack([6, 7]);
+    expect(ship.hitCount).toBe(2);
+    expect(ship.isShipSunk).toBe(true);
+  });
+  test('missed shot is recorded', () => {
+    gameBoard.receiveAttack([5, 7]);
+    expect(gameBoard.board[5][7]).toBe('attacked');
+  });
+  //I might need to check if an attack over a ship is also recorded on the board
 });
