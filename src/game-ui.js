@@ -19,12 +19,33 @@ export function createBoard(gridSize, playerBoard) {
     playerBoard.appendChild(row);
 
     //Add cells:
-    for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
+      cell.dataset.cordinates = `${i}${j}`;
       row.appendChild(cell);
     }
   }
 }
 createBoard(10, playerOneBoard);
 createBoard(10, playerTwoBoard);
+
+playerOneBoard.addEventListener('click', (e) => {
+  const cell = e.target;
+  if (cell.matches('.cell')) {
+    const [x, y] = cell.dataset.cordinates.split('');
+
+    playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
+    cell.classList.add('attacked-cell');
+  }
+});
+
+playerTwoBoard.addEventListener('click', (e) => {
+  const cell = e.target;
+  if (cell.matches('.cell')) {
+    const [x, y] = cell.dataset.cordinates.split('');
+
+    playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
+    cell.classList.add('attacked-cell');
+  }
+});
