@@ -1,4 +1,3 @@
-import { experiments } from 'webpack';
 import { Ship } from '../ship/ship-class';
 import { Gameboard } from './gameboard-class';
 
@@ -61,4 +60,23 @@ describe('receive attacks', () => {
     expect(gameBoard.board[5][7]).toBe('attacked');
   });
   //I might need to check if an attack over a ship is also recorded on the board
+});
+
+describe('isGameOver', () => {
+  beforeEach(() => {
+    gameBoard.createBoard(10);
+    gameBoard.placeShip([5, 7], [5, 8], 1);
+    gameBoard.placeShip([6, 7], [6, 8], 1);
+  });
+  test('is game over when all ships are sunk', () => {
+    gameBoard.receiveAttack([5, 7]);
+    gameBoard.receiveAttack([6, 7]);
+
+    expect(gameBoard.isGameOver()).toBe(true);
+  });
+
+  test('is NOT game over when there are ships left', () => {
+    gameBoard.receiveAttack([5, 7]);
+    expect(gameBoard.isGameOver()).toBe(false);
+  });
 });
