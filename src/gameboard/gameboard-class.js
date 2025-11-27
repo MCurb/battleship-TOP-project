@@ -3,6 +3,7 @@ import { Ship } from '../ship/ship-class';
 export class Gameboard {
   constructor() {
     this.board = [];
+    this.shipsOnBoard = [];
   }
 
   createBoard(gridSize) {
@@ -14,7 +15,7 @@ export class Gameboard {
 
   placeShip(start, end, length) {
     const ship = new Ship(length);
-
+    this.shipsOnBoard.push(ship);
     let [xs, ys] = start;
     const [xe, ye] = end;
     while (xs !== xe || ys !== ye) {
@@ -37,5 +38,13 @@ export class Gameboard {
       return;
     }
     this.board[x][y] = 'attacked';
+  }
+
+  isGameOver() {
+    let sunkShips = 0;
+    this.shipsOnBoard.forEach((ship) => {
+      if (ship.isSunk()) sunkShips++;
+    });
+    return this.shipsOnBoard.length === sunkShips ? true : false;
   }
 }
