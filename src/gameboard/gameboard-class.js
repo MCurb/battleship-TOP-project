@@ -27,4 +27,15 @@ export class Gameboard {
     //I need to check if a ship is already there, to avoid adding one ship
     //over the other
   }
+
+  receiveAttack(cordinates) {
+    const [x, y] = cordinates;
+    const position = this.board[x][y];
+
+    if (typeof position === 'object') {
+      position.hit();
+      return;
+    }
+    this.board[x][y] = 'attacked';
+  }
 }
