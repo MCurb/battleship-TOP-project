@@ -2,7 +2,7 @@ import { Ship } from './ship-class';
 
 let ship;
 beforeEach(() => {
-  ship = new Ship(6);
+  ship = new Ship(3);
 });
 
 describe('hit method', () => {
@@ -16,6 +16,14 @@ describe('hit method', () => {
     ship.hit();
     expect(ship.hitCount).toBe(2);
   });
+
+  test('hit and sink', () => {
+    ship.hit();
+    ship.hit();
+    ship.hit();
+
+    expect(ship.isShipSunk).toBe(true);
+  })
 });
 
 describe('isSunk method', () => {
