@@ -13,11 +13,11 @@ export class Gameboard {
     }
   }
 
-  placeShip(start, end, length) {
-    const ship = new Ship(length);
-    this.shipsOnBoard.push(ship);
+  placeShip(start, end) {
     let [xs, ys] = start;
     const [xe, ye] = end;
+    const ship = new Ship(xe - xs + (ye - ys));
+    this.shipsOnBoard.push(ship);
     while (xs !== xe || ys !== ye) {
       this.board[xs][ys] = ship;
       if (xs < xe) xs++;

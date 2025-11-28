@@ -22,13 +22,13 @@ describe('ship placement', () => {
     gameBoard.createBoard(10);
   });
   test('place one ship', () => {
-    gameBoard.placeShip([5, 7], [5, 9], 2);
+    gameBoard.placeShip([5, 7], [5, 9]);
     expect(typeof gameBoard.board[5][8]).toBe('object');
   });
 
   test('place multiple ships: horizontal and vertical', () => {
-    gameBoard.placeShip([5, 7], [5, 9], 2);
-    gameBoard.placeShip([5, 5], [8, 5], 3);
+    gameBoard.placeShip([5, 7], [5, 9]);
+    gameBoard.placeShip([5, 5], [8, 5]);
     expect(typeof gameBoard.board[5][8]).toBe('object');
     expect(typeof gameBoard.board[7][5]).toBe('object');
   });
@@ -65,8 +65,8 @@ describe('receive attacks', () => {
 describe('isGameOver', () => {
   beforeEach(() => {
     gameBoard.createBoard(10);
-    gameBoard.placeShip([5, 7], [5, 8], 1);
-    gameBoard.placeShip([6, 7], [6, 8], 1);
+    gameBoard.placeShip([5, 7], [5, 8]);
+    gameBoard.placeShip([6, 7], [6, 8]);
   });
   test('is game over when all ships are sunk', () => {
     gameBoard.receiveAttack([5, 7]);
