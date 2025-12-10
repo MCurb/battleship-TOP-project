@@ -1,3 +1,4 @@
+import { experiments } from 'webpack';
 import { Ship } from '../ship/ship-class';
 import { Gameboard } from './gameboard-class';
 
@@ -59,7 +60,24 @@ describe('receive attacks', () => {
     gameBoard.receiveAttack([5, 7]);
     expect(gameBoard.board[5][7]).toBe('attacked');
   });
-  //I might need to check if an attack over a ship is also recorded on the board
+  test('attack to the ship is recorded', () => {
+    const ship = new Ship(1);
+    gameBoard.board[6][7] = ship;
+    gameBoard.receiveAttack([6, 7]);
+
+    expect(Array.isArray(gameBoard.board[6][7])).toBe(true);
+    expect(gameBoard.board[6][7][0]).toBe(ship);
+    expect(gameBoard.board[6][7][1]).toBe('attacked');
+  });
+
+  test('attack is recorded just in the ship section that was attacked', () => {
+    const ship = new Ship(2);
+    gameBoard.board[5][7] = ship;
+    gameBoard.board[6][7] = ship;
+    gameBoard.receiveAttack([6, 7]);
+
+    expect(Array.isArray(gameBoard.board[5][7])).toBe(false);
+  });
 });
 
 describe('isGameOver', () => {
