@@ -117,3 +117,11 @@ body {
 .cell.ship {
     background-color: black;
 }
+
+.cell.ship.attacked-cell {
+  background-color: red;
+}
+
+.cell.ship.sunk {
+  background-color: purple;
+}

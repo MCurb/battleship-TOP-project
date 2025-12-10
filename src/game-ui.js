@@ -24,16 +24,29 @@ export function createBoard(gridSize, playerBoard, player) {
       cell.classList.add('cell');
       cell.dataset.cordinates = `${i}${j}`;
       row.appendChild(cell);
-      if (typeof player.gameboard.board[i][j] === 'object') {
-        cell.classList.add('ship');
-      } else if (player.gameboard.board[i][j] === 'attacked') {
-        cell.classList.add('attacked-cell');
-      }
+      //Link the cell with Gameboard information
+      syncBoard(player, cell, i, j);
     }
   }
 }
 createBoard(10, playerOneBoard, playerOne);
 createBoard(10, playerTwoBoard, playerTwo);
+
+function syncBoard(player, cell, i, j) {
+  if (Array.isArray(player.gameboard.board[i][j])) {
+    cell.classList.add('ship', 'attacked-cell');
+
+    if (player.gameboard.board[i][j][0].isSunk()) {
+      cell.classList.add('sunk');
+    }
+  } else if (typeof player.gameboard.board[i][j] === 'object') {
+    cell.classList.add('ship');
+  } else if (player.gameboard.board[i][j] === 'attacked') {
+    cell.classList.add('attacked-cell');
+  }
+}
+
+//Attack cells
 
 playerOneBoard.addEventListener('click', (e) => {
   const cell = e.target;
@@ -42,6 +55,7 @@ playerOneBoard.addEventListener('click', (e) => {
 
     playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
     cell.classList.add('attacked-cell');
+    createBoard(10, playerOneBoard, playerOne);
   }
 });
 
@@ -59,9 +73,10 @@ playerTwoBoard.addEventListener('click', (e) => {
 
 const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
 randomShipPlayerOne.addEventListener('click', () => {
-  playerOne.gameboard.placeShip([4, 3], [4, 7], 2);
+  playerOne.gameboard.placeShip([1, 3], [1, 4]);
+  playerOne.gameboard.placeShip([6, 3], [9, 3]);
+  playerOne.gameboard.placeShip([3, 3], [3, 8]);
+
   randomShipPlayerOne.style.background = 'blue';
   createBoard(10, playerOneBoard, playerOne);
 });
-
-//Add more ships, and start working on attacking ships
