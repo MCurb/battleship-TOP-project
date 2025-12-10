@@ -35,6 +35,7 @@ export class Gameboard {
 
     if (typeof position === 'object') {
       position.hit();
+      this.board[x][y] = [position, 'attacked'];
       return;
     }
     this.board[x][y] = 'attacked';
