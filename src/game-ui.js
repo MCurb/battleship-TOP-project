@@ -66,12 +66,15 @@ playerTwoBoard.addEventListener('click', (e) => {
 
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
     cell.classList.add('attacked-cell');
+    createBoard(10, playerTwoBoard, playerTwo);
   }
 });
 
 //Place Ships:
 
 const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
+const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
+
 randomShipPlayerOne.addEventListener('click', () => {
   playerOne.gameboard.placeShip([1, 3], [1, 4]);
   playerOne.gameboard.placeShip([6, 3], [9, 3]);
@@ -79,4 +82,13 @@ randomShipPlayerOne.addEventListener('click', () => {
 
   randomShipPlayerOne.style.background = 'blue';
   createBoard(10, playerOneBoard, playerOne);
+});
+
+randomShipPlayerTwo.addEventListener('click', () => {
+  playerTwo.gameboard.placeShip([1, 6], [1, 7]);
+  playerTwo.gameboard.placeShip([8, 5], [8, 9]);
+  playerTwo.gameboard.placeShip([3, 3], [3, 8]);
+
+  randomShipPlayerTwo.style.background = 'blue';
+  createBoard(10, playerTwoBoard, playerTwo);
 });
