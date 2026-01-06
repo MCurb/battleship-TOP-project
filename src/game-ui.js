@@ -48,25 +48,29 @@ function syncBoard(player, cell, i, j) {
 
 //Attack cells
 
+let turn = 'computer';
+
 playerOneBoard.addEventListener('click', (e) => {
   const cell = e.target;
-  if (cell.matches('.cell')) {
+  if (cell.matches('.cell') && turn === 'playerOne') {
     const [x, y] = cell.dataset.cordinates.split('');
 
     playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
     cell.classList.add('attacked-cell');
     createBoard(10, playerOneBoard, playerOne);
+    switchTurns();
   }
 });
 
 playerTwoBoard.addEventListener('click', (e) => {
   const cell = e.target;
-  if (cell.matches('.cell')) {
+  if (cell.matches('.cell') && turn === 'computer') {
     const [x, y] = cell.dataset.cordinates.split('');
 
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
     cell.classList.add('attacked-cell');
     createBoard(10, playerTwoBoard, playerTwo);
+    switchTurns();
   }
 });
 
@@ -92,3 +96,9 @@ randomShipPlayerTwo.addEventListener('click', () => {
   randomShipPlayerTwo.style.background = 'blue';
   createBoard(10, playerTwoBoard, playerTwo);
 });
+
+// Switch turns
+
+function switchTurns() {
+  return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
+}
