@@ -78,6 +78,18 @@ describe('receive attacks', () => {
 
     expect(Array.isArray(gameBoard.board[5][7])).toBe(false);
   });
+
+  test('attacks to an already attacked cell are dismissed', () => {
+    const ship = new Ship(2);
+    gameBoard.board[5][7] = ship;
+    gameBoard.board[6][7] = ship;
+    gameBoard.receiveAttack([6, 7]);
+
+    expect(() => {
+      gameBoard.receiveAttack([6, 7]);
+    }).not.toThrow();
+    expect(gameBoard.board[6][7]).toEqual(expect.any(Array));
+  });
 });
 
 describe('isGameOver', () => {

@@ -32,12 +32,16 @@ export class Gameboard {
   receiveAttack(cordinates) {
     const [x, y] = cordinates;
     const position = this.board[x][y];
+    //if it's an already attacked cell
+    if (Array.isArray(position) || position === 'attacked') return;
 
+    //if it's an unattacked ship part
     if (typeof position === 'object') {
       position.hit();
       this.board[x][y] = [position, 'attacked'];
       return;
     }
+
     this.board[x][y] = 'attacked';
   }
 
