@@ -49,22 +49,39 @@ function syncBoard(player, cell, i, j) {
 //Attack cells
 
 let turn = 'computer';
+const attacked = new Set();
 
-playerOneBoard.addEventListener('click', (e) => {
-  const cell = e.target;
-  if (
-    cell.matches('.cell') &&
-    turn === 'playerOne' &&
-    !cell.matches('.attacked-cell')
-  ) {
-    const [x, y] = cell.dataset.cordinates.split('');
+function computerAttack() {
+  if (turn !== 'playerOne') return;
+  // if (playerTwo.gameboard.isGameOver) return;
 
-    playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
-    cell.classList.add('attacked-cell');
-    createBoard(10, playerOneBoard, playerOne);
-    switchTurns();
+  let position = [getRandomInt(9, 0), getRandomInt(9, 0)];
+  let positionString = position.toString();
+  while (attacked.has(positionString)) {
+    position = [getRandomInt(9, 0), getRandomInt(9, 0)];
+    positionString = position.toString();
   }
-});
+  attacked.add(positionString);
+  const [x, y] = position;
+  playerOne.gameboard.receiveAttack([x, y]);
+  createBoard(10, playerOneBoard, playerOne);
+  switchTurns();
+}
+
+// playerOneBoard.addEventListener('click', (e) => {
+//   const cell = e.target;
+//   if (
+//     cell.matches('.cell') &&
+//     turn === 'playerOne' &&
+//     !cell.matches('.attacked-cell')
+//   ) {
+//     const [x, y] = cell.dataset.cordinates.split('');
+//     playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
+
+//     createBoard(10, playerOneBoard, playerOne);
+//     switchTurns();
+//   }
+// });
 
 playerTwoBoard.addEventListener('click', (e) => {
   const cell = e.target;
@@ -74,11 +91,13 @@ playerTwoBoard.addEventListener('click', (e) => {
     !cell.matches('.attacked-cell')
   ) {
     const [x, y] = cell.dataset.cordinates.split('');
-
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
-    cell.classList.add('attacked-cell');
+
     createBoard(10, playerTwoBoard, playerTwo);
     switchTurns();
+    setTimeout(() => {
+      computerAttack();
+    }, 1000);
   }
 });
 
@@ -109,4 +128,10 @@ randomShipPlayerTwo.addEventListener('click', () => {
 
 function switchTurns() {
   return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
+}
+
+// Helper functions:
+
+function getRandomInt(max, min) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
