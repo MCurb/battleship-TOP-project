@@ -52,7 +52,11 @@ let turn = 'computer';
 
 playerOneBoard.addEventListener('click', (e) => {
   const cell = e.target;
-  if (cell.matches('.cell') && turn === 'playerOne') {
+  if (
+    cell.matches('.cell') &&
+    turn === 'playerOne' &&
+    !cell.matches('.attacked-cell')
+  ) {
     const [x, y] = cell.dataset.cordinates.split('');
 
     playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
@@ -64,7 +68,11 @@ playerOneBoard.addEventListener('click', (e) => {
 
 playerTwoBoard.addEventListener('click', (e) => {
   const cell = e.target;
-  if (cell.matches('.cell') && turn === 'computer') {
+  if (
+    cell.matches('.cell') &&
+    turn === 'computer' &&
+    !cell.matches('.attacked-cell')
+  ) {
     const [x, y] = cell.dataset.cordinates.split('');
 
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
