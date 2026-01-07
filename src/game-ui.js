@@ -11,7 +11,7 @@ playerTwo.gameboard.createBoard(10);
 const playerOneBoard = document.querySelector('.player-one-board');
 const playerTwoBoard = document.querySelector('.player-two-board');
 
-export function createBoard(gridSize, playerBoard, player) {
+export function renderBoard(gridSize, playerBoard, player) {
   playerBoard.innerHTML = '';
   //Create rows:
   for (let i = 0; i < gridSize; i++) {
@@ -29,8 +29,8 @@ export function createBoard(gridSize, playerBoard, player) {
     }
   }
 }
-createBoard(10, playerOneBoard, playerOne);
-createBoard(10, playerTwoBoard, playerTwo);
+renderBoard(10, playerOneBoard, playerOne);
+renderBoard(10, playerTwoBoard, playerTwo);
 
 function syncBoard(player, cell, i, j) {
   if (Array.isArray(player.gameboard.board[i][j])) {
@@ -64,7 +64,8 @@ function computerAttack() {
   attacked.add(positionString);
   const [x, y] = position;
   playerOne.gameboard.receiveAttack([x, y]);
-  createBoard(10, playerOneBoard, playerOne);
+  renderBoard(10, playerOneBoard, playerOne);
+  if (playerOne.gameboard.isGameOver()) return gameOver();
   switchTurns();
 }
 
@@ -83,7 +84,9 @@ function computerAttack() {
 //   }
 // });
 
-playerTwoBoard.addEventListener('click', (e) => {
+playerTwoBoard.addEventListener('click', handlePlayerClicks);
+
+function handlePlayerClicks(e) {
   const cell = e.target;
   if (
     cell.matches('.cell') &&
@@ -93,13 +96,14 @@ playerTwoBoard.addEventListener('click', (e) => {
     const [x, y] = cell.dataset.cordinates.split('');
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
 
-    createBoard(10, playerTwoBoard, playerTwo);
+    renderBoard(10, playerTwoBoard, playerTwo);
+    if (playerTwo.gameboard.isGameOver()) return gameOver();
     switchTurns();
     setTimeout(() => {
       computerAttack();
-    }, 1000);
+    }, 500);
   }
-});
+}
 
 //Place Ships:
 
@@ -112,7 +116,7 @@ randomShipPlayerOne.addEventListener('click', () => {
   playerOne.gameboard.placeShip([3, 3], [3, 8]);
 
   randomShipPlayerOne.style.background = 'blue';
-  createBoard(10, playerOneBoard, playerOne);
+  renderBoard(10, playerOneBoard, playerOne);
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
@@ -121,17 +125,23 @@ randomShipPlayerTwo.addEventListener('click', () => {
   playerTwo.gameboard.placeShip([3, 3], [3, 8]);
 
   randomShipPlayerTwo.style.background = 'blue';
-  createBoard(10, playerTwoBoard, playerTwo);
+  renderBoard(10, playerTwoBoard, playerTwo);
 });
 
-// Switch turns
+// Helper functions:
 
+//Random number
+function getRandomInt(max, min) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Switch turns
 function switchTurns() {
   return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
 }
 
-// Helper functions:
-
-function getRandomInt(max, min) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+//Game over
+function gameOver() {
+  alert('Game over bitch');
+  playerTwoBoard.removeEventListener('click', handlePlayerClicks);
 }
