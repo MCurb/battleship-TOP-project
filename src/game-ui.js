@@ -111,16 +111,17 @@ const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
 const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
 
 randomShipPlayerOne.addEventListener('click', () => {
-  playerOne.gameboard.placeShip([1, 3], [1, 4]);
-  playerOne.gameboard.placeShip([6, 3], [9, 3]);
-  playerOne.gameboard.placeShip([3, 3], [3, 8]);
+  for (let i = 0; i < 4; i++) {
+    const { start, end } = generateRandomShip(playerOne);
+    playerOne.gameboard.placeShip(start, end);
+  }
 
   randomShipPlayerOne.style.background = 'blue';
   renderBoard(10, playerOneBoard, playerOne);
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
-  playerTwo.gameboard.placeShip([1, 6], [1, 7]);
+  playerTwo.gameboard.placeShip([0, 0], [10, 0]);
   playerTwo.gameboard.placeShip([8, 5], [8, 9]);
   playerTwo.gameboard.placeShip([3, 3], [3, 8]);
 
@@ -144,4 +145,45 @@ function switchTurns() {
 function gameOver() {
   alert('Game over bitch');
   playerTwoBoard.removeEventListener('click', handlePlayerClicks);
+}
+
+// Random Ships:
+
+function generateRandomShip(player) {
+  let start;
+  let end;
+  do {
+    const direction = getRandomInt(2, 1);
+    const line = getRandomInt(9, 0);
+    const from = getRandomInt(9, 0);
+    const to = getRandomInt(10, from + 1);
+
+    if (direction === 1) {
+      //horizontal
+      start = [line, from];
+      end = [line, to];
+    } else {
+      //vertical
+      start = [from, line];
+      end = [to, line];
+    }
+  } while (!checkCells(player, start, end));
+
+  return { start, end };
+}
+
+//Check cells are free
+
+function checkCells(player, start, end) {
+  let [xs, ys] = start;
+  const [xe, ye] = end;
+
+  while (xs !== xe || ys !== ye) {
+    if (typeof player.gameboard.board[xs][ys] === 'object') return false;
+
+    if (xs < xe) xs++;
+    if (ys < ye) ys++;
+  }
+
+  return true;
 }

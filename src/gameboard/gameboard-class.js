@@ -16,17 +16,15 @@ export class Gameboard {
   placeShip(start, end) {
     let [xs, ys] = start;
     const [xe, ye] = end;
+
     const ship = new Ship(xe - xs + (ye - ys));
     this.shipsOnBoard.push(ship);
+
     while (xs !== xe || ys !== ye) {
       this.board[xs][ys] = ship;
       if (xs < xe) xs++;
-      if (xs > xe) xs--;
       if (ys < ye) ys++;
-      if (ys > ye) ys--;
     }
-    //I need to check if a ship is already there, to avoid adding one ship
-    //over the other
   }
 
   receiveAttack(cordinates) {
