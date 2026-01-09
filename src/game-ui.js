@@ -111,19 +111,14 @@ const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
 const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
 
 randomShipPlayerOne.addEventListener('click', () => {
-  for (let i = 0; i < 4; i++) {
-    const { start, end } = generateRandomShip(playerOne);
-    playerOne.gameboard.placeShip(start, end);
-  }
+  placeRandomShips(playerOne);
 
   randomShipPlayerOne.style.background = 'blue';
   renderBoard(10, playerOneBoard, playerOne);
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
-  playerTwo.gameboard.placeShip([0, 0], [10, 0]);
-  playerTwo.gameboard.placeShip([8, 5], [8, 9]);
-  playerTwo.gameboard.placeShip([3, 3], [3, 8]);
+  placeRandomShips(playerTwo);
 
   randomShipPlayerTwo.style.background = 'blue';
   renderBoard(10, playerTwoBoard, playerTwo);
@@ -149,14 +144,30 @@ function gameOver() {
 
 // Random Ships:
 
-function generateRandomShip(player) {
+function placeRandomShips(player) {
+  const ships = [
+    [1, 4],
+    [2, 3],
+    [3, 2],
+    [4, 1],
+  ];
+
+  for (const [quantity, length] of ships) {
+    for (let i = 0; i < quantity; i++) {
+      const { start, end } = generateRandomShip(player, length);
+      player.gameboard.placeShip(start, end);
+    }
+  }
+}
+
+function generateRandomShip(player, length) {
   let start;
   let end;
   do {
     const direction = getRandomInt(2, 1);
     const line = getRandomInt(9, 0);
-    const from = getRandomInt(9, 0);
-    const to = getRandomInt(10, from + 1);
+    const from = getRandomInt(10 - length, 0);
+    const to = from + length;
 
     if (direction === 1) {
       //horizontal
