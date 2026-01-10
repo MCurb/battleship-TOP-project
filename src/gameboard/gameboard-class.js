@@ -13,6 +13,11 @@ export class Gameboard {
     }
   }
 
+  cleanBoard() {
+    this.board = [];
+    this.createBoard(10);
+  }
+
   placeShip(start, end) {
     let [xs, ys] = start;
     const [xe, ye] = end;

@@ -1,4 +1,3 @@
-import { experiments } from 'webpack';
 import { Ship } from '../ship/ship-class';
 import { Gameboard } from './gameboard-class';
 

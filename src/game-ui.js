@@ -111,6 +111,7 @@ const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
 const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
 
 randomShipPlayerOne.addEventListener('click', () => {
+  playerOne.gameboard.cleanBoard();
   placeRandomShips(playerOne);
 
   randomShipPlayerOne.style.background = 'blue';
@@ -118,6 +119,7 @@ randomShipPlayerOne.addEventListener('click', () => {
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
+  playerTwo.gameboard.cleanBoard();
   placeRandomShips(playerTwo);
 
   randomShipPlayerTwo.style.background = 'blue';
