@@ -51,10 +51,65 @@ function syncBoard(player, cell, i, j) {
 
 let turn = 'computer';
 const attacked = new Set();
+const lastAttack = [];
+const adjacent = new Queue();
 
 function computerAttack() {
   if (turn !== 'playerOne') return;
 
+  //If there's not last attacked position
+  if (lastAttack.length === 0) {
+    lastAttack[0] = randomAttack();
+    end();
+    return;
+  }
+  //take last attack
+  const [x, y] = lastAttack[0];
+  const position = playerOne.gameboard.board[x][y];
+  //If last attack was a ship
+  if (Array.isArray(position)) {
+    //clean queue in case it's the second attack to the ship
+    adjacent.cleanQueue();
+
+    //Enqueue valid adjacent cells
+    for (const [dx, dy] of [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ]) {
+      const move = [x + dx, y + dy];
+
+      if (isValid(move) && !attacked.has(move.toString())) {
+        adjacent.enqueue(move);
+      }
+    }
+    //dequeue and attack
+    const attack = adjacent.dequeue();
+    playerOne.gameboard.receiveAttack(attack);
+    attacked.add(attack.toString());
+    lastAttack[0] = attack;
+    end();
+    return;
+  }
+  //If last attack was water and all adjacent cells were tried
+  if (!Array.isArray(position) && adjacent.isEmpty()) {
+    lastAttack[0] = randomAttack();
+    end();
+    return;
+  }
+  //If last attack was water and there's still adjacent cells to try
+  //dequeue and attack
+  const attack = adjacent.dequeue();
+  playerOne.gameboard.receiveAttack(attack);
+  attacked.add(attack.toString());
+  lastAttack[0] = attack;
+
+  //End
+  end();
+}
+
+function randomAttack() {
   let position = [getRandomInt(9, 0), getRandomInt(9, 0)];
   let positionString = position.toString();
 
@@ -65,6 +120,10 @@ function computerAttack() {
   attacked.add(positionString);
   const [x, y] = position;
   playerOne.gameboard.receiveAttack([x, y]);
+  return position;
+}
+
+function end() {
   renderBoard(10, playerOneBoard, playerOne);
   if (playerOne.gameboard.isGameOver()) return gameOver();
   switchTurns();

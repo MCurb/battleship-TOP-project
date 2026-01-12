@@ -14,4 +14,8 @@ export class Queue {
   dequeue() {
     return this.array.shift();
   }
+
+  cleanQueue() {
+    this.array = [];
+  }
 }
