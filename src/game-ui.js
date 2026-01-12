@@ -1,4 +1,5 @@
 import { Player } from './player/player-class';
+import { Queue } from './queue/queue';
 
 //Create Gameboards
 
@@ -53,10 +54,10 @@ const attacked = new Set();
 
 function computerAttack() {
   if (turn !== 'playerOne') return;
-  // if (playerTwo.gameboard.isGameOver) return;
 
   let position = [getRandomInt(9, 0), getRandomInt(9, 0)];
   let positionString = position.toString();
+
   while (attacked.has(positionString)) {
     position = [getRandomInt(9, 0), getRandomInt(9, 0)];
     positionString = position.toString();
@@ -144,6 +145,12 @@ function gameOver() {
   playerTwoBoard.removeEventListener('click', handlePlayerClicks);
 }
 
+//Is valid move
+function isValid(cordinates) {
+  const [x, y] = cordinates;
+  return x >= 0 && x < 10 && y >= 0 && y < 10;
+}
+
 // Random Ships:
 
 function placeRandomShips(player) {
@@ -186,14 +193,54 @@ function generateRandomShip(player, length) {
 }
 
 //Check cells are free
+//The goal is to do this:
+//- Start on the range
+//- Enqueue it with all it's adjacent cells that are valid (valid means, not off board)
+//loop
+//- Check all the cells in the queue untill queue is empty. (return if one of the cells has an object)
+//After loop ends, keep going to the next cell in the range
 
 function checkCells(player, start, end) {
   let [xs, ys] = start;
   const [xe, ye] = end;
 
+  const queue = new Queue();
+  const checked = new Set();
+
+  //Init
+  queue.enqueue(start);
+
   while (xs !== xe || ys !== ye) {
     if (typeof player.gameboard.board[xs][ys] === 'object') return false;
 
+    //Enqueue all valid adjacent cells
+    for (const [dx, dy] of [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+      [-1, 1],
+      [-1, -1],
+      [1, -1],
+      [1, 1],
+    ]) {
+      //Calculate possible adjacent cell
+      const move = [xs + dx, ys + dy];
+
+      if (isValid(move) && !checked.has(move.toString())) {
+        queue.enqueue(move);
+      }
+    }
+
+    //Check all adjacent cells
+    while (!queue.isEmpty()) {
+      const [x, y] = queue.dequeue();
+
+      if (typeof player.gameboard.board[x][y] === 'object') return false;
+      checked.add([x, y].toString());
+    }
+
+    //Go to the next cell in the range
     if (xs < xe) xs++;
     if (ys < ye) ys++;
   }
