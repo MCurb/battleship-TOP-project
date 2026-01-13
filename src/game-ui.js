@@ -68,8 +68,13 @@ function computerAttack() {
   const position = playerOne.gameboard.board[x][y];
   //If last attack was a ship
   if (Array.isArray(position)) {
-    //clean queue in case it's the second attack to the ship
-    adjacent.cleanQueue();
+    //If the ship was sunk, make a random attack
+    if (position[0].isSunk()) {
+      lastAttack[0] = randomAttack();
+      adjacent.cleanQueue();
+      end();
+      return;
+    }
 
     //Enqueue valid adjacent cells
     for (const [dx, dy] of [
