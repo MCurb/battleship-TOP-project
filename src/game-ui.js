@@ -1,38 +1,38 @@
 import { Player } from './player/player-class';
 import { Queue } from './queue/queue';
 
-//Create Gameboards
-
+// INIT
 const playerOne = new Player();
 const playerTwo = new Player();
 playerOne.gameboard.createBoard(10);
 playerTwo.gameboard.createBoard(10);
-
-//Render gameboards:
+//Query gameboards:
 const playerOneBoard = document.querySelector('.player-one-board');
 const playerTwoBoard = document.querySelector('.player-two-board');
+renderBoard(playerOneBoard, playerOne);
+renderBoard(playerTwoBoard, playerTwo);
 
-export function renderBoard(gridSize, playerBoard, player) {
+// CREATE GAMEBOARD
+
+export function renderBoard(playerBoard, player) {
   playerBoard.innerHTML = '';
+  const gridSize = 10;
+
   //Create rows:
   for (let y = 0; y < gridSize; y++) {
-    const row = document.createElement('div');
-    row.classList.add('row');
+    const row = createRow();
     playerBoard.appendChild(row);
+
     //Add cells:
     for (let x = 0; x < gridSize; x++) {
-      const cell = document.createElement('div');
-      cell.classList.add('cell');
-      //x is horizontal, y is vertical
-      cell.dataset.cordinates = `${x}${y}`;
+      const cell = createCell(x, y);
       row.appendChild(cell);
-      //Link the cell with Gameboard information
+
+      //Link cell with gameboard info
       syncBoard(player, cell, x, y);
     }
   }
 }
-renderBoard(10, playerOneBoard, playerOne);
-renderBoard(10, playerTwoBoard, playerTwo);
 
 function syncBoard(player, cell, x, y) {
   if (Array.isArray(player.gameboard.board[x][y])) {
@@ -49,6 +49,20 @@ function syncBoard(player, cell, x, y) {
   } else if (player.gameboard.board[x][y] === 'attacked') {
     cell.classList.add('attacked-cell');
   }
+}
+
+function createRow() {
+  const row = document.createElement('div');
+  row.classList.add('row');
+  return row;
+}
+
+function createCell(x, y) {
+  const cell = document.createElement('div');
+  cell.classList.add('cell');
+  //x is horizontal, y is vertical
+  cell.dataset.cordinates = `${x}${y}`;
+  return cell;
 }
 
 //Attack cells
@@ -164,7 +178,7 @@ function attackFromQueue() {
 }
 
 function end() {
-  renderBoard(10, playerOneBoard, playerOne);
+  renderBoard(playerOneBoard, playerOne);
   if (playerOne.gameboard.isGameOver()) return gameOver();
   switchTurns();
 }
@@ -207,7 +221,7 @@ function handlePlayerClicks(e) {
     const [x, y] = cell.dataset.cordinates.split('');
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
 
-    renderBoard(10, playerTwoBoard, playerTwo);
+    renderBoard(playerTwoBoard, playerTwo);
     if (playerTwo.gameboard.isGameOver()) return gameOver();
     switchTurns();
     setTimeout(() => {
@@ -226,7 +240,7 @@ randomShipPlayerOne.addEventListener('click', () => {
   placeRandomShips(playerOne);
 
   randomShipPlayerOne.style.background = 'blue';
-  renderBoard(10, playerOneBoard, playerOne);
+  renderBoard(playerOneBoard, playerOne);
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
@@ -234,7 +248,7 @@ randomShipPlayerTwo.addEventListener('click', () => {
   placeRandomShips(playerTwo);
 
   randomShipPlayerTwo.style.background = 'blue';
-  renderBoard(10, playerTwoBoard, playerTwo);
+  renderBoard(playerTwoBoard, playerTwo);
 });
 
 // Helper functions:
