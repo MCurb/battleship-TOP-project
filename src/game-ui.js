@@ -15,37 +15,38 @@ const playerTwoBoard = document.querySelector('.player-two-board');
 export function renderBoard(gridSize, playerBoard, player) {
   playerBoard.innerHTML = '';
   //Create rows:
-  for (let i = 0; i < gridSize; i++) {
+  for (let y = 0; y < gridSize; y++) {
     const row = document.createElement('div');
     row.classList.add('row');
     playerBoard.appendChild(row);
     //Add cells:
-    for (let j = 0; j < gridSize; j++) {
+    for (let x = 0; x < gridSize; x++) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
-      cell.dataset.cordinates = `${i}${j}`;
+      //x is horizontal, y is vertical
+      cell.dataset.cordinates = `${x}${y}`;
       row.appendChild(cell);
       //Link the cell with Gameboard information
-      syncBoard(player, cell, i, j);
+      syncBoard(player, cell, x, y);
     }
   }
 }
 renderBoard(10, playerOneBoard, playerOne);
 renderBoard(10, playerTwoBoard, playerTwo);
 
-function syncBoard(player, cell, i, j) {
-  if (Array.isArray(player.gameboard.board[i][j])) {
+function syncBoard(player, cell, x, y) {
+  if (Array.isArray(player.gameboard.board[x][y])) {
     cell.classList.add('ship', 'attacked-cell');
 
-    if (player.gameboard.board[i][j][0].isSunk()) {
+    if (player.gameboard.board[x][y][0].isSunk()) {
       cell.classList.add('sunk');
     }
   } else if (
-    typeof player.gameboard.board[i][j] === 'object' &&
+    typeof player.gameboard.board[x][y] === 'object' &&
     player !== playerTwo
   ) {
     cell.classList.add('ship');
-  } else if (player.gameboard.board[i][j] === 'attacked') {
+  } else if (player.gameboard.board[x][y] === 'attacked') {
     cell.classList.add('attacked-cell');
   }
 }
@@ -94,22 +95,22 @@ function computerAttack() {
       const [xa, ya] = lastHits[0];
       const [xb, yb] = lastHits[1];
 
-      //if attacks are vertical:
+      //if attacks are horizontal:
       if (Math.abs(xa - xb) !== 0) {
-        const verticalMoves = [
+        const horizontalMoves = [
           [-1, 0],
           [1, 0],
         ];
-        enqueueAdjacent(verticalMoves, x, y);
+        enqueueAdjacent(horizontalMoves, x, y);
       }
 
-      //if attacks are horizontal
+      //if attacks are vertical
       if (Math.abs(ya - yb) !== 0) {
-        const horizontalMoves = [
+        const verticalMoves = [
           [0, -1],
           [0, 1],
         ];
-        enqueueAdjacent(horizontalMoves, x, y);
+        enqueueAdjacent(verticalMoves, x, y);
       }
     }
 
@@ -271,6 +272,7 @@ function placeRandomShips(player) {
   ];
 
   for (const [quantity, length] of ships) {
+    //e.g generate 2 ships, length 3
     for (let i = 0; i < quantity; i++) {
       const { start, end } = generateRandomShip(player, length);
       player.gameboard.placeShip(start, end);
