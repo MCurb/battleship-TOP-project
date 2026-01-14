@@ -40,7 +40,10 @@ function syncBoard(player, cell, i, j) {
     if (player.gameboard.board[i][j][0].isSunk()) {
       cell.classList.add('sunk');
     }
-  } else if (typeof player.gameboard.board[i][j] === 'object') {
+  } else if (
+    typeof player.gameboard.board[i][j] === 'object' &&
+    player !== playerTwo
+  ) {
     cell.classList.add('ship');
   } else if (player.gameboard.board[i][j] === 'attacked') {
     cell.classList.add('attacked-cell');
@@ -51,65 +54,89 @@ function syncBoard(player, cell, i, j) {
 
 let turn = 'computer';
 const attacked = new Set();
-const lastAttack = [];
+const prevAttack = [];
 const adjacent = new Queue();
+const lastHits = [];
 
 function computerAttack() {
   if (turn !== 'playerOne') return;
 
-  //If there's not last attacked position
-  if (lastAttack.length === 0) {
-    lastAttack[0] = randomAttack();
+  //random attack when game starts
+  if (prevAttack.length === 0) {
+    prevAttack[0] = randomAttack();
     end();
     return;
   }
-  //take last attack
-  const [x, y] = lastAttack[0];
+
+  const [x, y] = prevAttack[0];
   const position = playerOne.gameboard.board[x][y];
-  //If last attack was a ship
+
+  //If prev attack was a hit
   if (Array.isArray(position)) {
-    //If the ship was sunk, make a random attack
+    lastHits.push(prevAttack[0]);
+
+    //Keep lastHits max length = 2
+    if (lastHits.length > 2) {
+      lastHits.shift();
+    }
+
+    //If the ship was sunk start again with random attacks
     if (position[0].isSunk()) {
-      lastAttack[0] = randomAttack();
+      prevAttack[0] = randomAttack();
       adjacent.cleanQueue();
+      lastHits.length = 0;
       end();
       return;
     }
 
-    //Enqueue valid adjacent cells
-    for (const [dx, dy] of [
-      [-1, 0],
-      [1, 0],
-      [0, -1],
-      [0, 1],
-    ]) {
-      const move = [x + dx, y + dy];
+    if (lastHits.length === 2) {
+      //Take last two attacks
+      const [xa, ya] = lastHits[0];
+      const [xb, yb] = lastHits[1];
 
-      if (isValid(move) && !attacked.has(move.toString())) {
-        adjacent.enqueue(move);
+      //if attacks are vertical:
+      if (Math.abs(xa - xb) !== 0) {
+        const verticalMoves = [
+          [-1, 0],
+          [1, 0],
+        ];
+        enqueueAdjacent(verticalMoves, x, y);
+      }
+
+      //if attacks are horizontal
+      if (Math.abs(ya - yb) !== 0) {
+        const horizontalMoves = [
+          [0, -1],
+          [0, 1],
+        ];
+        enqueueAdjacent(horizontalMoves, x, y);
       }
     }
-    //dequeue and attack
-    const attack = adjacent.dequeue();
-    playerOne.gameboard.receiveAttack(attack);
-    attacked.add(attack.toString());
-    lastAttack[0] = attack;
-    end();
-    return;
-  }
-  //If last attack was water and all adjacent cells were tried
-  if (!Array.isArray(position) && adjacent.isEmpty()) {
-    lastAttack[0] = randomAttack();
-    end();
-    return;
-  }
-  //If last attack was water and there's still adjacent cells to try
-  //dequeue and attack
-  const attack = adjacent.dequeue();
-  playerOne.gameboard.receiveAttack(attack);
-  attacked.add(attack.toString());
-  lastAttack[0] = attack;
 
+    if (lastHits.length < 2) {
+      //Enqueue all valid adjacent cells
+      const possibleMoves = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+      ];
+      enqueueAdjacent(possibleMoves, x, y);
+    }
+
+    //dequeue and attack
+    attackFromQueue();
+    end();
+    return;
+  }
+  //Last attack was water and all adjacent cells were tried
+  if (!Array.isArray(position) && adjacent.isEmpty()) {
+    prevAttack[0] = randomAttack();
+    end();
+    return;
+  }
+  //Last attack was water and there's still adjacent cells to try
+  attackFromQueue();
   //End
   end();
 }
@@ -128,10 +155,28 @@ function randomAttack() {
   return position;
 }
 
+function attackFromQueue() {
+  const attack = adjacent.dequeue();
+  playerOne.gameboard.receiveAttack(attack);
+  attacked.add(attack.toString());
+  prevAttack[0] = attack;
+}
+
 function end() {
   renderBoard(10, playerOneBoard, playerOne);
   if (playerOne.gameboard.isGameOver()) return gameOver();
   switchTurns();
+}
+
+function enqueueAdjacent(adj, x, y) {
+  //Enqueue valid adjacent cells
+  for (const [dx, dy] of adj) {
+    const move = [x + dx, y + dy];
+
+    if (isValid(move) && !attacked.has(move.toString())) {
+      adjacent.enqueue(move);
+    }
+  }
 }
 
 // playerOneBoard.addEventListener('click', (e) => {
@@ -166,7 +211,7 @@ function handlePlayerClicks(e) {
     switchTurns();
     setTimeout(() => {
       computerAttack();
-    }, 500);
+    }, 10);
   }
 }
 
