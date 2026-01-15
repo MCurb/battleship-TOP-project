@@ -1,24 +1,23 @@
-// SHIP PLACEMENT
+import { renderBoard } from '../gameboard_ui/gameboard-ui';
+import { getRandomInt, enqueueAdjacent } from '../utils/utils';
+import { Queue } from '../queue/queue';
 
-//Place Ships:
+// ========================
+// PUBLIC API (exports)
+// ========================
 
-const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
-const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
+//Render Ships:
 
-randomShipPlayerOne.addEventListener('click', () => {
-  renderShips(playerOneBoard, playerOne, randomShipPlayerOne);
-});
-
-randomShipPlayerTwo.addEventListener('click', () => {
-  renderShips(playerTwoBoard, playerTwo, randomShipPlayerTwo);
-});
-
-function renderShips(playerBoard, player, button) {
+export function renderShips(playerBoard, player, button) {
   placeRandomShips(player);
 
   button.style.background = 'blue';
   renderBoard(playerBoard, player);
 }
+
+// ========================
+// PRIVATE HELPERS
+// ========================
 
 // Generate Random Ships:
 
@@ -67,7 +66,6 @@ function generateRandomShip(player, length) {
 }
 
 //Check ship and adjecent cells are free
-
 function checkCells(player, start, end) {
   let [xs, ys] = start;
   const [xe, ye] = end;
