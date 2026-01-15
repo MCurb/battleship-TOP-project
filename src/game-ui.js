@@ -65,7 +65,9 @@ function createCell(x, y) {
   return cell;
 }
 
-//Attack cells
+// ATTACKS
+
+// Computer Attacks
 
 let turn = 'computer';
 const attacked = new Set();
@@ -79,7 +81,7 @@ function computerAttack() {
   //random attack when game starts
   if (prevAttack.length === 0) {
     prevAttack[0] = randomAttack();
-    end();
+    completeRound(playerOneBoard, playerOne);
     return;
   }
 
@@ -100,7 +102,7 @@ function computerAttack() {
       prevAttack[0] = randomAttack();
       adjacent.cleanQueue();
       lastHits.length = 0;
-      end();
+      completeRound(playerOneBoard, playerOne);
       return;
     }
 
@@ -115,7 +117,7 @@ function computerAttack() {
           [-1, 0],
           [1, 0],
         ];
-        enqueueAdjacent(horizontalMoves, x, y);
+        enqueueAdjacent(horizontalMoves, adjacent, attacked, x, y);
       }
 
       //if attacks are vertical
@@ -124,7 +126,7 @@ function computerAttack() {
           [0, -1],
           [0, 1],
         ];
-        enqueueAdjacent(verticalMoves, x, y);
+        enqueueAdjacent(verticalMoves, adjacent, attacked, x, y);
       }
     }
 
@@ -136,37 +138,37 @@ function computerAttack() {
         [0, -1],
         [0, 1],
       ];
-      enqueueAdjacent(possibleMoves, x, y);
+      enqueueAdjacent(possibleMoves, adjacent, attacked, x, y);
     }
 
     //dequeue and attack
     attackFromQueue();
-    end();
+    completeRound(playerOneBoard, playerOne);
     return;
   }
   //Last attack was water and all adjacent cells were tried
   if (!Array.isArray(position) && adjacent.isEmpty()) {
     prevAttack[0] = randomAttack();
-    end();
+    completeRound(playerOneBoard, playerOne);
     return;
   }
   //Last attack was water and there's still adjacent cells to try
   attackFromQueue();
-  //End
-  end();
+  completeRound(playerOneBoard, playerOne);
 }
 
 function randomAttack() {
-  let position = [getRandomInt(9, 0), getRandomInt(9, 0)];
-  let positionString = position.toString();
+  let position, positionString;
 
-  while (attacked.has(positionString)) {
+  //if cell has been attacked, regenerate random position
+  do {
     position = [getRandomInt(9, 0), getRandomInt(9, 0)];
     positionString = position.toString();
-  }
+  } while (attacked.has(positionString));
+
   attacked.add(positionString);
-  const [x, y] = position;
-  playerOne.gameboard.receiveAttack([x, y]);
+  playerOne.gameboard.receiveAttack(position);
+
   return position;
 }
 
@@ -177,37 +179,13 @@ function attackFromQueue() {
   prevAttack[0] = attack;
 }
 
-function end() {
-  renderBoard(playerOneBoard, playerOne);
-  if (playerOne.gameboard.isGameOver()) return gameOver();
+function completeRound(playerBoard, player) {
+  renderBoard(playerBoard, player);
+  if (player.gameboard.isGameOver()) return gameOver();
   switchTurns();
 }
 
-function enqueueAdjacent(adj, x, y) {
-  //Enqueue valid adjacent cells
-  for (const [dx, dy] of adj) {
-    const move = [x + dx, y + dy];
-
-    if (isValid(move) && !attacked.has(move.toString())) {
-      adjacent.enqueue(move);
-    }
-  }
-}
-
-// playerOneBoard.addEventListener('click', (e) => {
-//   const cell = e.target;
-//   if (
-//     cell.matches('.cell') &&
-//     turn === 'playerOne' &&
-//     !cell.matches('.attacked-cell')
-//   ) {
-//     const [x, y] = cell.dataset.cordinates.split('');
-//     playerOne.gameboard.receiveAttack([Number(x), Number(y)]);
-
-//     createBoard(10, playerOneBoard, playerOne);
-//     switchTurns();
-//   }
-// });
+// User Attacks
 
 playerTwoBoard.addEventListener('click', handlePlayerClicks);
 
@@ -221,14 +199,14 @@ function handlePlayerClicks(e) {
     const [x, y] = cell.dataset.cordinates.split('');
     playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
 
-    renderBoard(playerTwoBoard, playerTwo);
-    if (playerTwo.gameboard.isGameOver()) return gameOver();
-    switchTurns();
+    completeRound(playerTwoBoard, playerTwo);
     setTimeout(() => {
       computerAttack();
-    }, 10);
+    }, 200);
   }
 }
+
+// SHIP PLACEMENT
 
 //Place Ships:
 
@@ -236,48 +214,27 @@ const randomShipPlayerOne = document.querySelector('.random-ships.player-one');
 const randomShipPlayerTwo = document.querySelector('.random-ships.player-two');
 
 randomShipPlayerOne.addEventListener('click', () => {
-  playerOne.gameboard.cleanBoard();
-  placeRandomShips(playerOne);
-
-  randomShipPlayerOne.style.background = 'blue';
-  renderBoard(playerOneBoard, playerOne);
+  renderShips(playerOneBoard, playerOne, randomShipPlayerOne);
 });
 
 randomShipPlayerTwo.addEventListener('click', () => {
-  playerTwo.gameboard.cleanBoard();
-  placeRandomShips(playerTwo);
-
-  randomShipPlayerTwo.style.background = 'blue';
-  renderBoard(playerTwoBoard, playerTwo);
+  renderShips(playerTwoBoard, playerTwo, randomShipPlayerTwo);
 });
 
-// Helper functions:
+function renderShips(playerBoard, player, button) {
+  placeRandomShips(player);
 
-//Random number
-function getRandomInt(max, min) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  button.style.background = 'blue';
+  renderBoard(playerBoard, player);
 }
 
-// Switch turns
-function switchTurns() {
-  return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
-}
-
-//Game over
-function gameOver() {
-  alert('Game over bitch');
-  playerTwoBoard.removeEventListener('click', handlePlayerClicks);
-}
-
-//Is valid move
-function isValid(cordinates) {
-  const [x, y] = cordinates;
-  return x >= 0 && x < 10 && y >= 0 && y < 10;
-}
-
-// Random Ships:
+// Generate Random Ships:
 
 function placeRandomShips(player) {
+  //clean board
+  player.gameboard.cleanBoard();
+
+  //add ships
   const ships = [
     [1, 4],
     [2, 3],
@@ -317,29 +274,21 @@ function generateRandomShip(player, length) {
   return { start, end };
 }
 
-//Check cells are free
-//The goal is to do this:
-//- Start on the range
-//- Enqueue it with all it's adjacent cells that are valid (valid means, not off board)
-//loop
-//- Check all the cells in the queue untill queue is empty. (return if one of the cells has an object)
-//After loop ends, keep going to the next cell in the range
+//Check ship and adjecent cells are free
 
 function checkCells(player, start, end) {
   let [xs, ys] = start;
   const [xe, ye] = end;
 
-  const queue = new Queue();
   const checked = new Set();
-
-  //Init
+  const queue = new Queue();
   queue.enqueue(start);
 
   while (xs !== xe || ys !== ye) {
     if (typeof player.gameboard.board[xs][ys] === 'object') return false;
 
     //Enqueue all valid adjacent cells
-    for (const [dx, dy] of [
+    const adjCellMoves = [
       [-1, 0],
       [1, 0],
       [0, -1],
@@ -348,14 +297,8 @@ function checkCells(player, start, end) {
       [-1, -1],
       [1, -1],
       [1, 1],
-    ]) {
-      //Calculate possible adjacent cell
-      const move = [xs + dx, ys + dy];
-
-      if (isValid(move) && !checked.has(move.toString())) {
-        queue.enqueue(move);
-      }
-    }
+    ];
+    enqueueAdjacent(adjCellMoves, queue, checked, xs, ys);
 
     //Check all adjacent cells
     while (!queue.isEmpty()) {
@@ -371,4 +314,40 @@ function checkCells(player, start, end) {
   }
 
   return true;
+}
+
+// Helper functions:
+
+//Enqueue adjacent cells
+function enqueueAdjacent(moves, queue, set, x, y) {
+  //Enqueue valid adjacent cells
+  for (const [dx, dy] of moves) {
+    const move = [x + dx, y + dy];
+
+    if (isValid(move) && !set.has(move.toString())) {
+      queue.enqueue(move);
+    }
+  }
+}
+
+//Random number
+function getRandomInt(max, min) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Switch turns
+function switchTurns() {
+  return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
+}
+
+//Game over
+function gameOver() {
+  alert('Game over bitch');
+  playerTwoBoard.removeEventListener('click', handlePlayerClicks);
+}
+
+//Is valid move
+function isValid(cordinates) {
+  const [x, y] = cordinates;
+  return x >= 0 && x < 10 && y >= 0 && y < 10;
 }
