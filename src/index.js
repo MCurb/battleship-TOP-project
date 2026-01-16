@@ -21,21 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
   cpu.gameboard.createBoard(10);
 
   // 4. Query buttons
-  const playerRandomShips = document.querySelector('.random-ships.player-one');
-  const computerRandomShips = document.querySelector(
-    '.random-ships.player-two',
-  );
+  const humanRandomBtn = document.querySelector('.random-ships-btn.human');
+  const cpuRandomBtn = document.querySelector('.random-ships-btn.cpu');
 
   // 5. Render boards and ships
   renderBoard(humanBoard, human, cpu);
   renderBoard(cpuBoard, cpu, human);
 
-  renderShips(human, humanBoard, playerRandomShips, cpu);
-  renderShips(cpu, cpuBoard, computerRandomShips, cpu);
+  renderShips(human, humanBoard, humanRandomBtn, cpu);
+  renderShips(cpu, cpuBoard, cpuRandomBtn, cpu);
 
   // 6. Setup event listeners
-  playerRandomShips.addEventListener('click', () => {
-    renderShips(human, humanBoard, playerRandomShips, cpu);
+  humanRandomBtn.addEventListener('click', () => {
+    renderShips(human, humanBoard, humanRandomBtn, cpu);
   });
 
   cpuBoard.addEventListener('click', handlePlayerClicks);

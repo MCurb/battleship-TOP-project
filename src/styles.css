@@ -86,8 +86,8 @@ body {
   height: 100%;
 }
 
-.player-one-board,
-.player-two-board {
+.human-board,
+.cpu-board {
   display: grid;
   width: 200px;
   height: 200px;

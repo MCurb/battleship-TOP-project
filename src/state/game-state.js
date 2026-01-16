@@ -14,8 +14,8 @@ export function initializeGame() {
       human: new Player(),
     },
     boards: {
-      cpu: document.querySelector('.player-two-board'),
-      human: document.querySelector('.player-one-board'),
+      cpu: document.querySelector('.cpu-board'),
+      human: document.querySelector('.human-board'),
     },
   };
 
