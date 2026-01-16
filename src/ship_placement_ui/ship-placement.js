@@ -8,10 +8,9 @@ import { Queue } from '../queue/queue';
 
 //Render Ships:
 
-export function renderShips(player, playerBoard, button, opponentPlayer) {
+export function renderShips(player, playerBoard, opponentPlayer) {
   placeRandomShips(player);
 
-  button.style.background = 'blue';
   renderBoard(playerBoard, player, opponentPlayer);
 }
 

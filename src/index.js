@@ -22,14 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Query buttons
   const humanRandomBtn = document.querySelector('.random-ships-btn.human');
-  const cpuRandomBtn = document.querySelector('.random-ships-btn.cpu');
 
   // 5. Render boards and ships
   renderBoard(humanBoard, human, cpu);
   renderBoard(cpuBoard, cpu, human);
 
-  renderShips(human, humanBoard, humanRandomBtn, cpu);
-  renderShips(cpu, cpuBoard, cpuRandomBtn, cpu);
+  renderShips(human, humanBoard, cpu);
+  renderShips(cpu, cpuBoard, cpu);
 
   // 6. Setup event listeners
   humanRandomBtn.addEventListener('click', () => {
