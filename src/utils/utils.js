@@ -17,17 +17,6 @@ export function getRandomInt(max, min) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Switch turns
-export function switchTurns() {
-  return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
-}
-
-//Game over
-export function gameOver() {
-  alert('Game over bitch');
-  playerTwoBoard.removeEventListener('click', handlePlayerClicks);
-}
-
 //Is valid move
 export function isValid(cordinates) {
   const [x, y] = cordinates;

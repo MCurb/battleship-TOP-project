@@ -1,31 +1,42 @@
-import { Player } from './player/player-class';
-import { Gameboard } from './gameboard/gameboard-class';
+import { initializeGame } from './state/game-state';
 import { renderBoard } from './gameboard_ui/gameboard-ui';
-import { Ship } from './ship/ship-class';
 import { renderShips } from './ship_placement_ui/ship-placement';
-import { createBoard } from './game-ui';
+import { handlePlayerClicks, initializeAttacks } from './attacks_ui/attacks-ui';
 import './styles.css';
 
-// INIT
-const playerOne = new Player();
-const playerTwo = new Player();
-playerOne.gameboard.createBoard(10);
-playerTwo.gameboard.createBoard(10);
-//Query gameboards:
-const playerOneBoard = document.querySelector('.player-one-board');
-const playerTwoBoard = document.querySelector('.player-two-board');
-//Query buttons
-const playerRandomShips = document.querySelector('.random-ships.player-one');
-const computerRandomShips = document.querySelector('.random-ships.player-two');
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Initialize the game state
+  const game = initializeGame();
 
-//Gameboard
-renderBoard(playerOneBoard, playerOne, playerTwo);
-renderBoard(playerTwoBoard, playerTwo, playerTwo);
+  const humanBoard = game.boards.human;
+  const cpuBoard = game.boards.cpu;
+  const human = game.players.human;
+  const cpu = game.players.cpu;
 
-//Ships
-renderShips(playerOneBoard, playerOne, playerRandomShips);
-renderShips(playerTwoBoard, playerTwo, computerRandomShips);
+  // 2. Initialize dependent modules
+  initializeAttacks(game);
 
-playerRandomShips.addEventListener('click', () => {
-  renderShips(playerOneBoard, playerOne, playerRandomShips);
+  // 3. Setup game boards
+  human.gameboard.createBoard(10);
+  cpu.gameboard.createBoard(10);
+
+  // 4. Query buttons
+  const playerRandomShips = document.querySelector('.random-ships.player-one');
+  const computerRandomShips = document.querySelector(
+    '.random-ships.player-two',
+  );
+
+  // 5. Render boards and ships
+  renderBoard(humanBoard, human, cpu);
+  renderBoard(cpuBoard, cpu, human);
+
+  renderShips(human, humanBoard, playerRandomShips, cpu);
+  renderShips(cpu, cpuBoard, computerRandomShips, cpu);
+
+  // 6. Setup event listeners
+  playerRandomShips.addEventListener('click', () => {
+    renderShips(human, humanBoard, playerRandomShips, cpu);
+  });
+
+  cpuBoard.addEventListener('click', handlePlayerClicks);
 });

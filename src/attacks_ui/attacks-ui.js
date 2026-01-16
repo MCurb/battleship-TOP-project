@@ -1,25 +1,66 @@
-// ATTACKS
+import { renderBoard } from '../gameboard_ui/gameboard-ui';
+import { Queue } from '../queue/queue';
+import { getRandomInt, enqueueAdjacent } from '../utils/utils';
 
-// Computer Attacks
-
-let turn = 'computer';
+// --- Module state ---
+let turn = 'playerOne';
 const attacked = new Set();
-const prevAttack = [];
 const adjacent = new Queue();
+const prevAttack = [];
 const lastHits = [];
 
+// Game references - will be set during initialization
+let human, humanBoard, cpu, cpuBoard;
+
+/**
+ * Initialize the attacks module with game dependencies
+ */
+export function initializeAttacks(gameState) {
+  human = gameState.players.human;
+  humanBoard = gameState.boards.human;
+  cpu = gameState.players.cpu;
+  cpuBoard = gameState.boards.cpu;
+}
+
+// ========================
+// PUBLIC API (exports)
+// ========================
+
+export function handlePlayerClicks(e) {
+  const cell = e.target;
+  if (
+    !cell.matches('.cell') ||
+    turn !== 'playerOne' ||
+    cell.matches('.attacked-cell')
+  ) {
+    return;
+  }
+
+  const [x, y] = cell.dataset.cordinates.split('');
+  cpu.gameboard.receiveAttack([Number(x), Number(y)]);
+
+  processAttackRound(cpuBoard, cpu);
+  setTimeout(() => {
+    computerAttack();
+  }, 200);
+}
+
+// ========================
+// PRIVATE HELPERS
+// ========================
+
 function computerAttack() {
-  if (turn !== 'playerOne') return;
+  if (turn !== 'computer') return;
 
   //random attack when game starts
   if (prevAttack.length === 0) {
     prevAttack[0] = randomAttack();
-    completeRound(playerOneBoard, playerOne);
+    processAttackRound(humanBoard, human);
     return;
   }
 
   const [x, y] = prevAttack[0];
-  const position = playerOne.gameboard.board[x][y];
+  const position = human.gameboard.board[x][y];
 
   //If prev attack was a hit
   if (Array.isArray(position)) {
@@ -35,7 +76,7 @@ function computerAttack() {
       prevAttack[0] = randomAttack();
       adjacent.cleanQueue();
       lastHits.length = 0;
-      completeRound(playerOneBoard, playerOne);
+      processAttackRound(humanBoard, human);
       return;
     }
 
@@ -76,18 +117,18 @@ function computerAttack() {
 
     //dequeue and attack
     attackFromQueue();
-    completeRound(playerOneBoard, playerOne);
+    processAttackRound(humanBoard, human);
     return;
   }
   //Last attack was water and all adjacent cells were tried
   if (!Array.isArray(position) && adjacent.isEmpty()) {
     prevAttack[0] = randomAttack();
-    completeRound(playerOneBoard, playerOne);
+    processAttackRound(humanBoard, human);
     return;
   }
   //Last attack was water and there's still adjacent cells to try
   attackFromQueue();
-  completeRound(playerOneBoard, playerOne);
+  processAttackRound(humanBoard, human);
 }
 
 function randomAttack() {
@@ -100,41 +141,29 @@ function randomAttack() {
   } while (attacked.has(positionString));
 
   attacked.add(positionString);
-  playerOne.gameboard.receiveAttack(position);
+  human.gameboard.receiveAttack(position);
 
   return position;
 }
 
 function attackFromQueue() {
   const attack = adjacent.dequeue();
-  playerOne.gameboard.receiveAttack(attack);
+  human.gameboard.receiveAttack(attack);
   attacked.add(attack.toString());
   prevAttack[0] = attack;
 }
 
-function completeRound(playerBoard, player) {
-  renderBoard(playerBoard, player);
+function processAttackRound(playerBoard, player) {
+  renderBoard(playerBoard, player, cpu);
   if (player.gameboard.isGameOver()) return gameOver();
   switchTurns();
 }
 
-// User Attacks
+function switchTurns() {
+  return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
+}
 
-playerTwoBoard.addEventListener('click', handlePlayerClicks);
-
-function handlePlayerClicks(e) {
-  const cell = e.target;
-  if (
-    cell.matches('.cell') &&
-    turn === 'computer' &&
-    !cell.matches('.attacked-cell')
-  ) {
-    const [x, y] = cell.dataset.cordinates.split('');
-    playerTwo.gameboard.receiveAttack([Number(x), Number(y)]);
-
-    completeRound(playerTwoBoard, playerTwo);
-    setTimeout(() => {
-      computerAttack();
-    }, 200);
-  }
+function gameOver() {
+  alert('Game over bitch');
+  cpuBoard.removeEventListener('click', handlePlayerClicks);
 }

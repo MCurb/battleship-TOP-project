@@ -1,6 +1,8 @@
-// CREATE GAMEBOARD
+// ========================
+// PUBLIC API (exports)
+// ========================
 
-export function renderBoard(playerBoard, player, computer) {
+export function renderBoard(playerBoard, player, cpu) {
   playerBoard.innerHTML = '';
   const gridSize = 10;
 
@@ -15,12 +17,16 @@ export function renderBoard(playerBoard, player, computer) {
       row.appendChild(cell);
 
       //Link cell with gameboard info
-      syncBoard(player, computer, cell, x, y);
+      syncBoard(player, cpu, cell, x, y);
     }
   }
 }
 
-function syncBoard(player, computer, cell, x, y) {
+// ========================
+// PRIVATE HELPERS
+// ========================
+
+function syncBoard(player, cpu, cell, x, y) {
   if (Array.isArray(player.gameboard.board[x][y])) {
     cell.classList.add('ship', 'attacked-cell');
 
@@ -29,7 +35,7 @@ function syncBoard(player, computer, cell, x, y) {
     }
   } else if (
     typeof player.gameboard.board[x][y] === 'object' &&
-    player !== computer
+    player !== cpu
   ) {
     cell.classList.add('ship');
   } else if (player.gameboard.board[x][y] === 'attacked') {
