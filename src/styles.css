@@ -81,9 +81,12 @@ html {
 }
 
 body {
-  display: flex;
-  column-gap: 20px;
+  display: grid;
+  place-items: center;
+  grid-template-rows: max-content max-content max-content max-content;
+  row-gap: 32px;
   height: 100%;
+  background-color: #1b1e22;
 }
 
 @font-face {
@@ -118,12 +121,31 @@ body {
     0 22px 30px rgba(0, 0, 0, 0.9);
 }
 
+.info-container {
+  text-align: center;
+  background-color: white;
+  width: 25%;
+  padding: 4px;
+}
+
+/* Game Boards */
+
+.boards-container {
+  display: flex;
+  column-gap: 48px;
+}
+
+.human-section, .cpu-section {
+  display: grid;
+  row-gap: 12px;
+  place-items: center;
+}
 
 .human-board,
 .cpu-board {
   display: grid;
-  width: 200px;
-  height: 200px;
+  width: 348px;
+  height: 348px;
 }
 
 .row {
@@ -131,6 +153,18 @@ body {
   flex: 1;
   flex-direction: row;
 }
+
+/* Buttons */
+
+.buttons {
+  justify-self: stretch;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: center;
+  column-gap: 16px;
+}
+
+/* Cell Styles */
 
 .cell {
   border: 1px solid gray;
@@ -144,11 +178,11 @@ body {
 }
 
 .cell.attacked-cell {
-    background-color: blue;
+  background-color: blue;
 }
 
 .cell.ship {
-    background-color: black;
+  background-color: black;
 }
 
 .cell.ship.attacked-cell {
