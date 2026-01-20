@@ -9,6 +9,7 @@ import { Queue } from '../queue/queue';
 //Render Ships:
 
 export function renderShips(player, playerBoard, opponentPlayer) {
+  if (player.gameboard.isGameActive) return;
   placeRandomShips(player);
 
   renderBoard(playerBoard, player, opponentPlayer);
