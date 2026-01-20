@@ -76,6 +76,23 @@ h6 {
   isolation: isolate;
 }
 
+:root {
+  --background-color: #1b1e22;
+  --text-color: #ffffff;
+  --primary-color: #00b4d8;
+  --hover-background-color: #00b4d8;
+  --hover-text-color: #1e1e1e;
+  --shadow-color: #000000;
+  --error-color: #fc6868;
+  --water-color: #0068c9;
+  --hit-color: #ff0000;
+  --spark-color: #ff3c00;
+  --smoke-color: #00000080;
+  --ship-color: #4e4e4e;
+  --miss-color: #00b7ff;
+  --crosshair-color: #00ff22;
+}
+
 html {
   height: 100vh;
 }
@@ -86,7 +103,7 @@ body {
   grid-template-rows: max-content max-content max-content max-content;
   row-gap: 32px;
   height: 100%;
-  background-color: #1b1e22;
+  background-color: rgba(84, 83, 83);
 }
 
 @font-face {
@@ -135,10 +152,35 @@ body {
   column-gap: 48px;
 }
 
-.human-section, .cpu-section {
+.outter-board-wrap {
+  padding: 1rem;
+  position: relative;
+  background: rgba(36, 36, 36);
+  padding: 9px;
+  border-radius: 4px;
+}
+
+.inner-board-wrap {
+  padding: 1rem;
+  position: relative;
+  background: linear-gradient(to right, #00d2ff 0%, #3a47d5 60%);
+  padding: 4px;
+}
+
+.inner-board-wrap.enemy {
+  background: linear-gradient(to right, purple, red);
+}
+
+.human-section,
+.cpu-section {
   display: grid;
   row-gap: 12px;
   place-items: center;
+}
+
+p {
+  color: white;
+  font-size: 20px;
 }
 
 .human-board,
@@ -154,6 +196,52 @@ body {
   flex-direction: row;
 }
 
+/* Cell Styles */
+
+.cell {
+  border-right: 2px solid rgb(175, 171, 171);
+  border-bottom: 2px solid rgb(175, 171, 171);
+  background-color: rgba(14, 32, 65);
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.row .cell:nth-child(10) {
+  border-right: 0px;
+}
+
+.row:nth-child(10) .cell {
+  border-bottom: 0px;
+}
+
+.cpu-board .cell:hover {
+  cursor: crosshair;
+}
+.human-board .cell:hover {
+  cursor: not-allowed;
+}
+
+.cell.attacked-cell > img {
+  width: 60%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cell.ship {
+  background-color: #7d848a;
+}
+
+.cell.ship.attacked-cell > img {
+  position: absolute;
+}
+
+.cell.ship.sunk {
+  background-color: #480c0c;
+}
+
 /* Buttons */
 
 .buttons {
@@ -162,33 +250,4 @@ body {
   grid-template-columns: max-content max-content;
   justify-content: center;
   column-gap: 16px;
-}
-
-/* Cell Styles */
-
-.cell {
-  border: 1px solid gray;
-  display: flex;
-  flex: 1;
-}
-
-.cell:hover {
-  cursor: pointer;
-  background-color: lightgray;
-}
-
-.cell.attacked-cell {
-  background-color: blue;
-}
-
-.cell.ship {
-  background-color: black;
-}
-
-.cell.ship.attacked-cell {
-  background-color: red;
-}
-
-.cell.ship.sunk {
-  background-color: purple;
 }

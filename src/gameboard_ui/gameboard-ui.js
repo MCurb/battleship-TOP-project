@@ -1,3 +1,6 @@
+import close from '../icons/close.png';
+import o from '../icons/o.png';
+
 // ========================
 // PUBLIC API (exports)
 // ========================
@@ -29,6 +32,7 @@ export function renderBoard(playerBoard, player, cpu) {
 function syncBoard(player, cpu, cell, x, y) {
   if (Array.isArray(player.gameboard.board[x][y])) {
     cell.classList.add('ship', 'attacked-cell');
+    cell.appendChild(createIcon(close));
 
     if (player.gameboard.board[x][y][0].isSunk()) {
       cell.classList.add('sunk');
@@ -40,7 +44,14 @@ function syncBoard(player, cpu, cell, x, y) {
     cell.classList.add('ship');
   } else if (player.gameboard.board[x][y] === 'attacked') {
     cell.classList.add('attacked-cell');
+    cell.appendChild(createIcon(o));
   }
+}
+
+function createIcon(src) {
+  const icon = document.createElement('img');
+  icon.src = src;
+  return icon;
 }
 
 function createRow() {
