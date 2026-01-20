@@ -103,7 +103,7 @@ body {
   grid-template-rows: max-content max-content max-content max-content;
   row-gap: 32px;
   height: 100%;
-  background-color: rgb(85, 84, 84);
+  background-color: hsl(0, 1%, 33%);
   font-family: 'Progress', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -269,8 +269,14 @@ p {
   transform: translate(-50%, -50%);
 }
 
-.cell.ship {
-  background-color: #7d848a;
+.cell.ship:not(.sunk) {
+   background-image: linear-gradient(
+    to right,
+    #232526 0%,
+    #414345 51%,
+    #232526 100%
+  );
+  background-size: 200% auto;
 }
 
 .cell.ship.sunk {
