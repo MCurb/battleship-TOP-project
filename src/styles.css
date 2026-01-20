@@ -307,6 +307,10 @@ p {
   color: #fff;
 }
 
+.buttons button:active {
+  box-shadow: none;
+}
+
 /* Helper Class */
 
 .glow-animation {
