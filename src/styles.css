@@ -222,7 +222,7 @@ p {
   cursor: not-allowed;
 }
 
-.cell.attacked-cell > img {
+.cell > img {
   width: 60%;
   position: absolute;
   top: 50%;
@@ -232,10 +232,6 @@ p {
 
 .cell.ship {
   background-color: #7d848a;
-}
-
-.cell.ship.attacked-cell > img {
-  position: absolute;
 }
 
 .cell.ship.sunk {
