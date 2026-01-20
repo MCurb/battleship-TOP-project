@@ -31,7 +31,7 @@ export function renderBoard(playerBoard, player, cpu) {
 
 function syncBoard(player, cpu, cell, x, y) {
   if (Array.isArray(player.gameboard.board[x][y])) {
-    cell.classList.add('ship');
+    cell.classList.add('ship', 'attacked-cell');
     cell.appendChild(createIcon(xAttack));
 
     if (player.gameboard.board[x][y][0].isSunk()) {
@@ -43,6 +43,7 @@ function syncBoard(player, cpu, cell, x, y) {
   ) {
     cell.classList.add('ship');
   } else if (player.gameboard.board[x][y] === 'attacked') {
+    cell.classList.add('attacked-cell');
     cell.appendChild(createIcon(oMiss));
   }
 }
