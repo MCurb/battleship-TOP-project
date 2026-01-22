@@ -23,7 +23,7 @@ export function renderShips(player, playerBoard, opponentPlayer) {
 
 function placeRandomShips(player) {
   //clean board
-  player.gameboard.cleanBoard();
+  player.gameboard.resetGameboard();
 
   //add ships
   const ships = [

@@ -14,9 +14,11 @@ export class Gameboard {
     }
   }
 
-  cleanBoard() {
+  resetGameboard() {
     this.board = [];
     this.createBoard(10);
+    this.shipsOnBoard = [];
+    this.isGameActive = false;
   }
 
   placeShip(start, end) {
