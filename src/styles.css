@@ -288,18 +288,25 @@ p {
 .buttons {
   justify-self: stretch;
   display: grid;
+  grid-template-rows: max-content max-content;
+  place-items: center;
+  row-gap: 20px;
+}
+
+.down-buttons {
+  display: grid;
   grid-template-columns: max-content max-content;
-  justify-content: center;
   column-gap: 48px;
 }
 
-.buttons > button {
+.buttons button {
   padding: 4px 16px;
   width: 150px;
 
   color: #e6e6e6;
   letter-spacing: 1px;
   border-radius: 3px;
+  text-align: center;
 }
 
 .buttons button:hover {
