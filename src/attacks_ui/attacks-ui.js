@@ -1,4 +1,5 @@
 import { renderBoard } from '../gameboard_ui/gameboard-ui';
+import { obs } from '../observer/observable';
 import { Queue } from '../queue/queue';
 import { getRandomInt, enqueueAdjacent } from '../utils/utils';
 
@@ -155,7 +156,7 @@ function attackFromQueue() {
 
 function processAttackRound(playerBoard, player) {
   renderBoard(playerBoard, player, cpu);
-  if (player.gameboard.isGameOver()) return gameOver();
+  if (player.gameboard.isGameOver()) return gameOver(player);
   switchTurns();
 }
 
@@ -163,7 +164,7 @@ function switchTurns() {
   return turn === 'playerOne' ? (turn = 'computer') : (turn = 'playerOne');
 }
 
-function gameOver() {
-  alert('Game over bitch');
+function gameOver(player) {
+  obs.notify('gameOver', player);
   cpuBoard.removeEventListener('click', handlePlayerClicks);
 }
