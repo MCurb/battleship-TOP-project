@@ -1,9 +1,8 @@
 import { initializeGame } from './state/game-state';
-import { renderBoard } from './gameboard_ui/gameboard-ui';
+import { GameController } from './game-controller/game-controller';
 import { renderShips } from './ship_placement_ui/ship-placement';
-import { handlePlayerClicks, initializeAttacks } from './attacks_ui/attacks-ui';
-import './styles.css';
 import { obs } from './observer/observable';
+import './styles.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize the game state
@@ -23,30 +22,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Query buttons
   const humanRandomBtn = document.querySelector('.random-ships-btn.human');
+  const startBtn = document.querySelector('.start-btn');
 
   // 5. Render boards and ships
-  renderBoard(humanBoard, human, cpu);
-  renderBoard(cpuBoard, cpu, human);
-
   renderShips(human, humanBoard, cpu);
   renderShips(cpu, cpuBoard, cpu);
 
   // 6. Setup event listeners
   humanRandomBtn.addEventListener('click', () => {
     renderShips(human, humanBoard, humanRandomBtn, cpu);
-    obs.notify('ready');
   });
 
-  cpuBoard.addEventListener('click', handlePlayerClicks);
+  cpuBoard.addEventListener('click', (e) => {
+    const cell = e.target;
+    if (!cell.matches('.cell') || cell.matches('.attacked-cell')) return;
 
-  function gameInfoSection(gamePhase, player) {
+    const [x, y] = cell.dataset.cordinates.split('');
+    controller.handlePlayerAttack([Number(x), Number(y)]);
+  });
+
+  startBtn.addEventListener('click', () => {
+    startBtn.style.display = 'none';
+    controller.startGame();
+  });
+
+  // 7. Setup UI update handler
+  function updateGameUI(gamePhase, player) {
     const gameInfoSec = document.querySelector('.info-container');
 
     if (gamePhase === 'setup') gameInfoSec.textContent = 'Place your ships';
-    if (gamePhase === 'ready') gameInfoSec.textContent = 'Time to fight';
+    if (gamePhase === 'playing') gameInfoSec.textContent = 'Time to fight';
     if (gamePhase === 'gameOver') {
-      if (player === human) gameInfoSec.textContent = `Game over: enemy wins`;
-      if (player === cpu) gameInfoSec.textContent = 'Congrats: YOU win!';
+      if (player === cpu) gameInfoSec.textContent = 'Game over: Enemy wins';
+      if (player === human) gameInfoSec.textContent = 'Congrats: YOU win!';
     }
   }
 

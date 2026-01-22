@@ -38,7 +38,7 @@ export class Gameboard {
   receiveAttack(cordinates) {
     const [x, y] = cordinates;
     const position = this.board[x][y];
-    this.isGameActive = true;
+    // this.isGameActive = true;
     //if it's an already attacked cell
     if (Array.isArray(position) || position === 'attacked') return;
 
