@@ -7,28 +7,26 @@ import './styles.css';
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize the game state
   const game = initializeGame();
+  const controller = new GameController(game);
 
   const humanBoard = game.boards.human;
   const cpuBoard = game.boards.cpu;
   const human = game.players.human;
   const cpu = game.players.cpu;
 
-  // 2. Initialize dependent modules
-  initializeAttacks(game);
-
-  // 3. Setup game boards
+  // 2. Setup game boards
   human.gameboard.createBoard(10);
   cpu.gameboard.createBoard(10);
 
-  // 4. Query buttons
+  // 3. Query buttons
   const humanRandomBtn = document.querySelector('.random-ships-btn.human');
   const startBtn = document.querySelector('.start-btn');
 
-  // 5. Render boards and ships
+  // 4. Render boards and ships
   renderShips(human, humanBoard, cpu);
   renderShips(cpu, cpuBoard, cpu);
 
-  // 6. Setup event listeners
+  // 5. Setup event listeners
   humanRandomBtn.addEventListener('click', () => {
     renderShips(human, humanBoard, humanRandomBtn, cpu);
   });
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     controller.startGame();
   });
 
-  // 7. Setup UI update handler
+  // 6. Setup UI update handler
   function updateGameUI(gamePhase, player) {
     const gameInfoSec = document.querySelector('.info-container');
 
@@ -58,5 +56,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  obs.subscribe(gameInfoSection);
+  obs.subscribe(updateGameUI);
 });
