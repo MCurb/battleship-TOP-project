@@ -23,14 +23,14 @@ describe('ship placement', () => {
   });
   test('place one ship', () => {
     gameBoard.placeShip([5, 7], [5, 9]);
-    expect(typeof gameBoard.board[5][8]).toBe('object');
+    expect(gameBoard.board[5][8]).toBeInstanceOf(Ship);
   });
 
   test('place multiple ships: horizontal and vertical', () => {
     gameBoard.placeShip([5, 7], [5, 9]);
     gameBoard.placeShip([5, 5], [8, 5]);
-    expect(typeof gameBoard.board[5][8]).toBe('object');
-    expect(typeof gameBoard.board[7][5]).toBe('object');
+    expect(gameBoard.board[5][8]).toBeInstanceOf(Ship);
+    expect(gameBoard.board[7][5]).toBeInstanceOf(Ship);
   });
 
   //Test if placeShip doesn't add a ship over another ship
