@@ -79,8 +79,7 @@ describe('receive attacks', () => {
   });
 
   test('attacks to an already attacked cell are dismissed', () => {
-    const ship = new Ship(2);
-    gameBoard.board[5][7] = ship;
+    const ship = new Ship(1);
     gameBoard.board[6][7] = ship;
     gameBoard.receiveAttack([6, 7]);
 
