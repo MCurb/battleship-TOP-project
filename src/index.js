@@ -4,6 +4,15 @@ import { renderShips } from './ship_placement_ui/ship-placement';
 import { obs } from './observer/observable';
 import './styles.css';
 
+const gameInfoText = {
+  setup: 'Deploy your fleet',
+  playing: 'The battle has begun',
+  gameOver: {
+    human: 'Enemy fleet destroyed',
+    cpu: 'Your fleet has been destroyed',
+  },
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize the game state
   const game = initializeGame();
@@ -55,12 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Setup UI update handler
   function updateGameUI(gamePhase, player) {
     const gameInfoSec = document.querySelector('.info-container');
+    const winner = player === human ? 'human' : 'cpu';
 
-    if (gamePhase === 'setup') gameInfoSec.textContent = 'Place your ships';
-    if (gamePhase === 'playing') gameInfoSec.textContent = 'Time to fight';
     if (gamePhase === 'gameOver') {
-      if (player === cpu) gameInfoSec.textContent = 'Game over: Enemy wins';
-      if (player === human) gameInfoSec.textContent = 'Congrats: YOU win!';
+      gameInfoSec.textContent = gameInfoText.gameOver[winner];
+    } else {
+      gameInfoSec.textContent = gameInfoText[gamePhase];
     }
   }
 
