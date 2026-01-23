@@ -99,7 +99,7 @@ battleship-TOP-project/
 
 ## Acknowledgements
 
-- 🎨 Icons by [Pixel Perfect]([https://www.flaticon.com/free-icons/close](https://www.flaticon.com/free-icons/close)) and [Freepik]([https://www.flaticon.com/free-icons/o](https://www.flaticon.com/free-icons/o)) from Flaticon
+- 🎨 Icons by [Pixel Perfect](https://www.flaticon.com/free-icons/close) and [Freepik](https://www.flaticon.com/free-icons/o) from Flaticon
 - 📘 [The Odin Project](https://www.theodinproject.com/) — structure, guidance, and discipline
 - 📚 [MDN Web Docs](https://developer.mozilla.org/en-US/) — answers to every JavaScript doubt
 ## License
