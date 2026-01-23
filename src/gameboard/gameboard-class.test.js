@@ -33,7 +33,11 @@ describe('ship placement', () => {
     expect(gameBoard.board[7][5]).toBeInstanceOf(Ship);
   });
 
-  //Test if placeShip doesn't add a ship over another ship
+  test('placeShip updates shipsOnBoard', () => {
+    gameBoard.placeShip([5, 7], [5, 9]);
+    gameBoard.placeShip([5, 5], [8, 5]);
+    expect(gameBoard.shipsOnBoard.length).toBe(2);
+  });
 });
 
 describe('receive attacks', () => {
