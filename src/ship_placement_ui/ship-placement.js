@@ -46,9 +46,9 @@ function generateRandomShip(player, length) {
   let start;
   let end;
   do {
-    const direction = getRandomInt(2, 1);
-    const line = getRandomInt(9, 0);
-    const from = getRandomInt(10 - length, 0);
+    const direction = getRandomInt(1, 2);
+    const line = getRandomInt(0, 9);
+    const from = getRandomInt(0, 10 - length);
     const to = from + length;
 
     if (direction === 1) {

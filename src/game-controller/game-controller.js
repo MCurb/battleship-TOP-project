@@ -124,8 +124,8 @@ export class GameController {
   getRandomAttack() {
     let x, y, key;
     do {
-      x = getRandomInt(9, 0);
-      y = getRandomInt(9, 0);
+      x = getRandomInt(0, 9);
+      y = getRandomInt(0, 9);
       key = `${x},${y}`;
     } while (this.attacked.has(key));
 

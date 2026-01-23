@@ -13,7 +13,7 @@ export function enqueueAdjacent(moves, queue, set, x, y) {
 }
 
 //Random number
-export function getRandomInt(max, min) {
+export function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
