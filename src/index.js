@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. Query buttons
   const humanRandomBtn = document.querySelector('.random-ships-btn.human');
   const startBtn = document.querySelector('.start-btn');
+  const restartBtn = document.querySelector('.restart-game-btn');
 
   // 4. Render boards and ships
   renderShips(human, humanBoard, cpu);
@@ -42,6 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', () => {
     startBtn.style.display = 'none';
     controller.startGame();
+  });
+
+  restartBtn.addEventListener('click', () => {
+    controller.resetGame();
+    startBtn.style.display = 'block';
+    renderShips(human, humanBoard, cpu);
+    renderShips(cpu, cpuBoard, cpu);
   });
 
   // 6. Setup UI update handler

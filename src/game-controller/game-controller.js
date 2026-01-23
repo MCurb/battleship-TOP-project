@@ -192,6 +192,8 @@ export class GameController {
     this.adjacent.cleanQueue();
     this.prevAttack = [];
     this.lastHits = [];
+
+    obs.notify(this.currentPhase);
   }
 
   //End the game and notify observers
@@ -199,6 +201,6 @@ export class GameController {
     this.currentPhase = 'gameOver';
     this.gameWinner = winner;
     const winnerPlayer = winner === 'human' ? this.human : this.cpu;
-    obs.notify('gameOver', winnerPlayer);
+    obs.notify(this.currentPhase, winnerPlayer);
   }
 }
