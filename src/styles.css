@@ -1,5 +1,9 @@
 /* CSS Modern Reset */
 
+* {
+  /* outline: 3px solid orange; */
+}
+
 /* 1. Use a more-intuitive box-sizing model */
 *,
 *::before,
@@ -133,7 +137,18 @@ h6 {
 }
 
 html {
-  height: 110vh;
+  height: 100%;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: radial-gradient(
+    circle at center,
+    #3f3f3f 0%,
+    #2f2f2f 40%,
+    #1e1e1e 100%
+  );
 }
 
 body {
@@ -144,17 +159,12 @@ body {
   row-gap: 1.75rem;
 
   /* Box Model */
-  height: 100%;
+  padding-bottom: 28px;
 
   /* Typography / Visuals */
   font-family: 'Progress', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
-  background: radial-gradient(
-    circle at center,
-    #3f3f3f 0%,
-    #2f2f2f 40%,
-    #1e1e1e 100%
-  );
+
   -webkit-font-smoothing: antialiased;
 
   /* Miscellaneous / Interactions */
@@ -209,7 +219,7 @@ p {
 .info-container {
   /* Box Model */
   position: relative;
-  width: 28%;
+  min-width: 28%;
   padding: 0.5rem 2rem;
   border-radius: 0.1875rem;
   border: 1px solid var(--border-dark);
@@ -271,7 +281,7 @@ p {
 
 .boards-container {
   display: flex;
-  column-gap: 3rem;
+  gap: 3rem;
 }
 
 .outter-board-wrap {
@@ -324,6 +334,10 @@ p {
   /* Box Model */
   width: 348px;
   height: 348px;
+
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;
 }
 
 .row {
@@ -392,8 +406,6 @@ p {
 /* Buttons */
 
 .buttons {
-  justify-self: stretch;
-
   /* Grid / Flex Layout */
   display: grid;
   place-items: center;
@@ -456,4 +468,74 @@ p {
     inset 0 1px 0 var(--rgba-white-heavy),
     inset 0 -1px 0 var(--rgba-black-heavy),
     0 2px 4px var(--rgba-black-heavy);
+}
+
+@media (max-width: 850px) {
+  .boards-container {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 550px) {
+  .logo-text {
+    /* Box Model */
+    margin: 0.375rem; /* 0.625 × 0.6 */
+
+    /* Typography / Visuals */
+    font-size: 3rem;
+    letter-spacing: 0.075rem; /* 0.125 × 0.6 */
+
+    /* Miscellaneous / Interactions */
+    text-shadow:
+      0 -0.6px 0 var(--shadow-1),
+      0 0.6px 0 var(--shadow-2),
+      0 1.2px 0 var(--shadow-3),
+      0 1.8px 0 var(--shadow-4),
+      0 2.4px 0 var(--shadow-5),
+      0 3px 0 var(--shadow-6),
+      0 3.6px 0 var(--shadow-7),
+      0 4.2px 0 var(--shadow-8),
+      0 4.8px 0 var(--shadow-9),
+      0 5.4px 0 var(--shadow-10),
+      0 6px 0 var(--shadow-11),
+      0 6.6px 0 var(--shadow-12),
+      0 7.2px 0 var(--shadow-13),
+      0 7.8px 0 var(--shadow-14),
+      0 8.4px 0 var(--shadow-15),
+      0 9px 0 var(--shadow-16),
+      0 0.825rem 1.125rem var(--rgba-black-darkest); /* 1.375 × 0.6, 1.875 × 0.6 */
+  }
+
+  .info-container {
+    font-size: 0.625rem;
+  }
+
+  .outter-board-wrap {
+    padding: 8px;
+  }
+
+  .inner-board-wrap {
+    padding: 2px;
+  }
+
+  .human-board,
+  .cpu-board {
+    width: 80vw;
+    height: 80vw;
+  }
+
+  .buttons button {
+    width: 10rem;
+  }
+
+  .buttons {
+    row-gap: 1rem;
+    font-size: 0.625rem;
+  }
+
+  .down-buttons {
+    grid-template-columns: max-content;
+    row-gap: 1rem;
+  }
 }
