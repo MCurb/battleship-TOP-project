@@ -507,10 +507,6 @@ p {
       0 0.825rem 1.125rem var(--rgba-black-darkest); /* 1.375 × 0.6, 1.875 × 0.6 */
   }
 
-  .info-container {
-    font-size: 0.625rem;
-  }
-
   .outter-board-wrap {
     padding: 8px;
   }
@@ -531,7 +527,6 @@ p {
 
   .buttons {
     row-gap: 1rem;
-    font-size: 0.625rem;
   }
 
   .down-buttons {
