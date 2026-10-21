@@ -1,6 +1,6 @@
 import { Queue } from '../queue/queue';
 import { obs } from '../observer/observable';
-import { getRandomInt, enqueueAdjacent } from '../utils/utils';
+import { getRandomInt, enqueueAdjacent, saveShipArea } from '../utils/utils';
 import { renderBoard } from '../gameboard_ui/gameboard-ui';
 
 export class GameController {
@@ -21,6 +21,7 @@ export class GameController {
     this.adjacent = new Queue();
     this.prevAttack = [];
     this.lastHits = [];
+    this.shipAreas = new Set();
   }
 
   //Transition from setup phase to playing phase
@@ -71,6 +72,10 @@ export class GameController {
     //If prev attack was a hit
     if (Array.isArray(position)) {
       this.lastHits.push(this.prevAttack[0]);
+
+      //Record Ship Area
+      this.shipAreas.add(`${this.prevAttack[0]}`);
+      saveShipArea(this.shipAreas, x, y);
 
       //Keep lastHits max length = 2
       if (this.lastHits.length > 2) {
@@ -127,7 +132,7 @@ export class GameController {
       x = getRandomInt(0, 9);
       y = getRandomInt(0, 9);
       key = `${x},${y}`;
-    } while (this.attacked.has(key));
+    } while (this.attacked.has(key) || this.shipAreas.has(key));
 
     this.attacked.add(key);
     this.human.gameboard.receiveAttack([x, y]);
@@ -192,6 +197,7 @@ export class GameController {
     this.adjacent.cleanQueue();
     this.prevAttack = [];
     this.lastHits = [];
+    this.shipAreas = new Set();
 
     obs.notify(this.currentPhase);
   }
